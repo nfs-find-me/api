@@ -41,9 +41,9 @@ public class Post {
 	
 	@Data
 	public static class Geolocation {
-		public Float posX;
+		public Double posX;
 		
-		public Float posY;
+		public Double posY;
 		
 		public Integer zip;
 		

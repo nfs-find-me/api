@@ -26,9 +26,9 @@ public class PostController {
 		post.setUserId("userId");
 		post.setPicture("picture");
 		Post.Geolocation geolocation = new Post.Geolocation();
-		geolocation.setPosX("posX");
-		geolocation.setPosY("posY");
-		geolocation.setZip("zip");
+		geolocation.setPosX(1.0);
+		geolocation.setPosY(1.0);
+		geolocation.setZip(76000);
 		geolocation.setCity("city");
 		geolocation.setCountry("country");
 		post.setGeolocation(geolocation);
