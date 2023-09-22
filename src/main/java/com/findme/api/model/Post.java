@@ -62,7 +62,7 @@ public class Post {
 	}
 	
 	@Data
-	private static class Like {
+	public static class Like {
 		private String userId;
 		
 		private LocalDateTime createdAt;
