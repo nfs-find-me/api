@@ -1,20 +1,19 @@
-package com.findme.api.model;
+package com.findme.api.model.dto;
 
+import com.findme.api.model.Role;
+import com.findme.api.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Document("user")
-public class User {
+public class UserDTO {
 	@Id
 	private String id;
 	
@@ -37,14 +36,4 @@ public class User {
 	private Integer score = 0;
 	
 	private String biography;
-	
-	@NonNull
-	private LocalDateTime createdAt;
-	
-	@NonNull
-	private LocalDateTime updatedAt;
-	
-	
-
-	
 }
