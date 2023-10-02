@@ -34,10 +34,10 @@ public class Post {
 	private boolean verified;
 	
 	@NonNull
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 	
 	@NonNull
-	private LocalDateTime updatedAt;
+	private LocalDateTime updatedAt = LocalDateTime.now();
 	
 	@Data
 	public static class Geolocation {
@@ -58,14 +58,14 @@ public class Post {
 	public static class View {
 		public String userId;
 		
-		public LocalDateTime createdAt;
+		public LocalDateTime createdAt = LocalDateTime.now();
 	}
 	
 	@Data
-	private static class Like {
+	public static class Like {
 		private String userId;
 		
-		private LocalDateTime createdAt;
+		private LocalDateTime createdAt = LocalDateTime.now();
 	}
 	
 }

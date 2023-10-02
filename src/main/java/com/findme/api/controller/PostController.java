@@ -1,18 +1,20 @@
 package com.findme.api.controller;
 
+import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
+import com.findme.api.model.dto.PostDTO;
 import com.findme.api.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
 	private final PostService postService;
+	
+	PostMapper postMapper = new PostMapper();
 	
 	@Autowired
 	public PostController(PostService postService) {
@@ -20,20 +22,27 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public Post createPost() {
-		Post post = new Post();
-		post.setId("1");
-		post.setUserId("userId");
-		post.setPicture("picture");
-		Post.Geolocation geolocation = new Post.Geolocation();
-		geolocation.setPosX(1.0);
-		geolocation.setPosY(1.0);
-		geolocation.setZip(76000);
-		geolocation.setCity("city");
-		geolocation.setCountry("country");
-		post.setGeolocation(geolocation);
-		post.setCreatedAt(LocalDateTime.now());
-		post.setUpdatedAt(LocalDateTime.now());
-		return postService.createPost(post);
+	public Post createPost(@RequestBody PostDTO postDTO) {
+		return postService.createPost(postMapper.toEntity(postDTO));
+	}
+	
+	@GetMapping
+	public List<Post> getAllPosts() {
+		return postService.getAllPosts();
+	}
+	
+	@GetMapping("/{id}")
+	public Post getPostById(@PathVariable String id) {
+		return postService.getPostById(id);
+	}
+	
+	@PutMapping("/{id}")
+	public Post editPost(@PathVariable String id, @RequestBody PostDTO postDTO) {
+		return postService.editPost(id, postDTO);
+	}
+	
+	@DeleteMapping("/{id}")
+	public void deletePost(@PathVariable String id) {
+		postService.deletePost(id);
 	}
 }
