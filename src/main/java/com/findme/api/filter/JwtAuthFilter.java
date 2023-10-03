@@ -1,11 +1,13 @@
 package com.findme.api.filter;
 
 import com.findme.api.config.UserDetailsServiceImpl;
+import com.findme.api.exception.CustomAccessDeniedException;
 import com.findme.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private UserDetailsServiceImpl userDetailsService;
 	
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 		String authHeader = request.getHeader("Authorization");
 		String token = null;
 		String username = null;
@@ -41,6 +43,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);
+			} else {
+				try {
+					throw new CustomAccessDeniedException(request, response);
+				} catch (CustomAccessDeniedException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		filterChain.doFilter(request, response);
