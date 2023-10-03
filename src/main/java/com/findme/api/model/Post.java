@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -20,8 +21,7 @@ public class Post {
 	@NonNull
 	private String userId;
 	
-	@NonNull
-	private String picture;
+	private Map<String,String> picture;
 	
 	private String description;
 	

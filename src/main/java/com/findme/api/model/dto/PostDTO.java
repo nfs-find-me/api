@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.Map;
+
 @Data
 @NoArgsConstructor
 public class PostDTO {
@@ -13,7 +15,7 @@ public class PostDTO {
 	
 	private String userId;
 	
-	private String picture;
+	private Map<String,String> picture;
 	
 	private String description;
 	
