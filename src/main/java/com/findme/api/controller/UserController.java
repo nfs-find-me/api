@@ -34,7 +34,6 @@ public class UserController {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
 		);
-		System.out.println("Authenticated");
 		return ResponseEntity.ok(jwtService.generateToken(authRequest.getUsername()));
 	}
 }
