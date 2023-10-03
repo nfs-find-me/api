@@ -22,6 +22,7 @@ public class AuthService {
 	@Autowired
 	public AuthService(UserRepository userRepository) {
 		this.userRepository = userRepository;
+		this.userService = new UserService(userRepository);
 	}
 	
 	public User register(AuthRequest authRequest) {

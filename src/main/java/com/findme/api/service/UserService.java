@@ -4,14 +4,22 @@ import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.UserDTO;
 import com.findme.api.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserService {
 	
 	UserRepository userRepository;
 	
 	UserMapper userMapper = new UserMapper();
+	
+	@Autowired
+	public UserService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 	
 	public User createUser(UserDTO userDTO) {
 		return userRepository.save(userMapper.toEntity(userDTO));
