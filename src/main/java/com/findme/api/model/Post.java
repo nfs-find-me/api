@@ -6,6 +6,7 @@ import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.GeneratedValue;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Document("post")
 public class Post {
 	@Id
+	@GeneratedValue(generator = "uuid")
 	private String id;
 	
 	@NonNull
