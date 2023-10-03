@@ -1,6 +1,6 @@
 package com.findme.api.config;
 
-import com.findme.api.exception.CustomAccessDeniedHandler;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +30,6 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthFilter authFilter;
 	
-	@Autowired
-	private CustomAccessDeniedHandler accessDeniedHandler;
-	
 	@Bean
 	//authentication
 	public UserDetailsService userDetailsService() {
@@ -44,15 +41,11 @@ public class SecurityConfig {
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/user/register","/user/authenticate").permitAll()
+						.requestMatchers("/auth/register","/auth/login").permitAll()
 						.anyRequest().authenticated()
 				)
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(Customizer.withDefaults())
-				.exceptionHandling(exc -> exc
-						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.FORBIDDEN))
-						.accessDeniedHandler(accessDeniedHandler)
-				)
 				.addFilterAfter(authFilter, BasicAuthenticationFilter.class)
 				.build();
 	}

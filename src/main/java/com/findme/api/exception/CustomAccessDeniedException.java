@@ -7,19 +7,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class CustomAccessDeniedException extends Exception {
 	
-	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+	public CustomAccessDeniedException() {
+		super();
+	}
+	
+	public CustomAccessDeniedException(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		System.out.println("Access denied");
 		response.setStatus(HttpStatus.FORBIDDEN.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
