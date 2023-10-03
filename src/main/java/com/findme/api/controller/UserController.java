@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class UserController {
 	@Autowired
 	private UserService userService;
@@ -29,7 +29,7 @@ public class UserController {
 		return userService.register(authRequest);
 	}
 	
-	@PostMapping("/authenticate")
+	@PostMapping("/login")
 	public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
