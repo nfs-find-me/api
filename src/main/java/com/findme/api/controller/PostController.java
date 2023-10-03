@@ -1,17 +1,23 @@
 package com.findme.api.controller;
 
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
+	private Map<String,String> currentImage;
 	private final PostService postService;
 	
 	PostMapper postMapper = new PostMapper();
@@ -22,8 +28,16 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public Post createPost(@RequestBody PostDTO postDTO) {
+	public Post createPost(@RequestBody PostDTO postDTO, @RequestParam("file") MultipartFile file) {
+//		Map<String,String> image = postService.uploadImage(file);
+		System.out.println(postDTO);
+		postDTO.setPicture(currentImage);
 		return postService.createPost(postMapper.toEntity(postDTO));
+	}
+
+	@PostMapping("/image")
+	public void createPost(@RequestParam("file") MultipartFile file) throws IOException {
+		currentImage = postService.uploadImage(file);
 	}
 	
 	@GetMapping
