@@ -28,7 +28,7 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public Post createPost(@RequestBody PostDTO postDTO, @RequestParam("file") MultipartFile file) {
+	public Post createPost(@RequestBody PostDTO postDTO) {
 //		Map<String,String> image = postService.uploadImage(file);
 		System.out.println(postDTO);
 		postDTO.setPicture(currentImage);
