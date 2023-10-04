@@ -64,8 +64,6 @@ public class PostService {
 	}
 
 	public Map<String,String> uploadImage(MultipartFile file) {
-		System.out.print("file : ");
-		System.out.println(file);
 		Map params = ObjectUtils.asMap(
 				"folder", "find-me/posts/",
 				"use_filename", false,

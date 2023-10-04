@@ -28,11 +28,13 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public Post createPost(@RequestBody PostDTO postDTO) {
-//		Map<String,String> image = postService.uploadImage(file);
-		System.out.println("postDTO");
-		System.out.println(postDTO);
+	public Post createPost(@RequestBody PostDTO postDTO) throws Exception {
+		System.out.println(currentImage);
+		if (currentImage == null) {
+			throw new Exception("Missing image");
+		}
 		postDTO.setPicture(currentImage);
+		currentImage = null;
 		return postService.createPost(postMapper.toEntity(postDTO));
 	}
 
