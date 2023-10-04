@@ -61,7 +61,7 @@ class PostServiceTest {
 		postDTO = new PostDTO();
 		postDTO.setId("1");
 		postDTO.setUserId("1");
-		postDTO.setPicture("picture");
+//		postDTO.setPicture();
 		postDTO.setDescription("description");
 		
 		Post.Geolocation geolocation = new Post.Geolocation();
