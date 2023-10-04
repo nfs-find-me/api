@@ -91,6 +91,11 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.0-b05</version>
         </dependency>
+        <dependency>
+            <groupId>com.mailgun</groupId>
+            <artifactId>mailgun-java</artifactId>
+            <version>1.0.9</version>
+        </dependency>
     </dependencies>
 
     <build>

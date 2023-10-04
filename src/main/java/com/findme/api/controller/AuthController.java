@@ -4,7 +4,9 @@ import com.findme.api.model.AuthRequest;
 import com.findme.api.model.User;
 import com.findme.api.service.JwtService;
 import com.findme.api.service.AuthService;
+import com.findme.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,5 +36,13 @@ public class AuthController {
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
 		);
 		return ResponseEntity.ok(jwtService.generateToken(authRequest.getUsername()));
+	}
+	@GetMapping("/mail-verif")
+	public boolean checkMail(@Param("id") String id, @Param("code") String code) throws Exception {
+		return userService.checkMail(id,code);
+	}
+	@GetMapping("/send-mail-verif")
+	public User GenerateMailCode(@Param("email")  String email) throws Exception {
+		return userService.sendConfMail(email);
 	}
 }

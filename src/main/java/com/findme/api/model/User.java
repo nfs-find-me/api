@@ -31,7 +31,9 @@ public class User {
 	private String password;
 	
 	private String avatar;
-	
+
+	private String confirmationCode;
+
 	private List<User> friends = new ArrayList<>();
 	
 	private List<Role> roles = List.of(Role.USER);
