@@ -30,14 +30,16 @@ public class PostController {
 	@PostMapping
 	public Post createPost(@RequestBody PostDTO postDTO) {
 //		Map<String,String> image = postService.uploadImage(file);
+		System.out.println("postDTO");
 		System.out.println(postDTO);
 		postDTO.setPicture(currentImage);
 		return postService.createPost(postMapper.toEntity(postDTO));
 	}
 
 	@PostMapping("/image")
-	public void createPost(@RequestParam("file") MultipartFile file) throws IOException {
+	public Map<String,String> createPost(@RequestParam("file") MultipartFile file) throws IOException {
 		currentImage = postService.uploadImage(file);
+		return currentImage;
 	}
 	
 	@GetMapping

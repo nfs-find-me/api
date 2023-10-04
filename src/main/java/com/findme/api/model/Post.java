@@ -32,13 +32,10 @@ public class Post {
 	
 	private Like like;
 	
-	@NonNull
-	private boolean verified;
+	private boolean verified = false;
 	
-	@NonNull
 	private LocalDateTime createdAt = LocalDateTime.now();
 	
-	@NonNull
 	private LocalDateTime updatedAt = LocalDateTime.now();
 	
 	@Data
