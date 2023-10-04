@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -20,8 +21,7 @@ public class Post {
 	@NonNull
 	private String userId;
 	
-	@NonNull
-	private String picture;
+	private Map<String,String> picture;
 	
 	private String description;
 	
@@ -32,13 +32,10 @@ public class Post {
 	
 	private Like like;
 	
-	@NonNull
-	private boolean verified;
+	private boolean verified = false;
 	
-	@NonNull
 	private LocalDateTime createdAt = LocalDateTime.now();
 	
-	@NonNull
 	private LocalDateTime updatedAt = LocalDateTime.now();
 	
 	@Data
