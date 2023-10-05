@@ -22,6 +22,8 @@ import java.util.*;
 @Service
 public class AuthService {
 	UserRepository userRepository;
+
+	EmailTemplates emailTemplates = new EmailTemplates();
 	
 	UserMapper userMapper = new UserMapper();
 
@@ -47,23 +49,14 @@ public class AuthService {
 		return userService.createUser(userDTO);
 	}
 
-	public MessageResponse sendMail(String email, String code) {
-		System.out.println("sending mail");
+	public MessageResponse sendConfMail(User user) {
 		MailgunMessagesApi mailgunMessagesApi = MailgunClient.config(environment.getProperty("mailgun.api.key"))
 				.createApi(MailgunMessagesApi.class);
-		System.out.println("sending mail ok");
-		Message message = Message.builder()
-				.from("FindMe <find-me@sandbox1c9216d6afbd42c8a26f1c7e94af1450.mailgun.org>")
-				.to(email)
-				.subject("Hello")
-				.html("<p>Bonjour</p><h1>code : "+code+"</h1>")
-				.text("Testing out some Mailgun awesomeness!")
-				.build();
-		System.out.println(mailgunMessagesApi.sendMessage("sandbox1c9216d6afbd42c8a26f1c7e94af1450.mailgun.org", message));
-		return mailgunMessagesApi.sendMessage("sandbox1c9216d6afbd42c8a26f1c7e94af1450.mailgun.org", message);
+		Message message = emailTemplates.mailConfMessage(user, environment);
+		return mailgunMessagesApi.sendMessage(environment.getProperty("mailgun.domain"), message);
 	}
 
-	public User sendConfMail(String email) throws Exception {
+	public User generateNewCode(String email) throws Exception {
 		int leftLimit;
 		int rightLimit;
 		double nb;
@@ -99,7 +92,7 @@ public class AuthService {
 		user.setConfirmationCode(confirmationCode);
 		userRepository.save(user);
 
-		sendMail(user.getEmail(),confirmationCode);
+		sendConfMail(user);
 		return user;
 	}
 

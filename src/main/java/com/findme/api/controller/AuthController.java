@@ -43,6 +43,6 @@ public class AuthController {
 	}
 	@GetMapping("/send-mail-verif")
 	public User GenerateMailCode(@Param("email")  String email) throws Exception {
-		return userService.sendConfMail(email);
+		return userService.generateNewCode(email);
 	}
 }
