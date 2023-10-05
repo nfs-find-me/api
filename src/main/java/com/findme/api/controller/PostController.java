@@ -5,8 +5,10 @@ import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
+import com.findme.api.response.ResponseJson;
 import com.findme.api.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,35 +30,34 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public Post createPost(@RequestBody PostDTO postDTO) throws Exception {
-		System.out.println(currentImage);
+	public ResponseJson<Post> createPost(@RequestBody PostDTO postDTO) throws Exception {
 		if (currentImage == null) {
 			throw new Exception("Missing image");
 		}
 		postDTO.setPicture(currentImage);
 		currentImage = null;
-		return postService.createPost(postMapper.toEntity(postDTO));
+		return new ResponseJson<>(postService.createPost(postMapper.toEntity(postDTO)), HttpStatus.OK.value());
 	}
 
 	@PostMapping("/image")
-	public Map<String,String> createPost(@RequestParam("file") MultipartFile file) throws IOException {
+	public ResponseJson<Map<String,String>> createPost(@RequestParam("file") MultipartFile file) throws IOException {
 		currentImage = postService.uploadImage(file);
-		return currentImage;
+		return new ResponseJson<>(currentImage, HttpStatus.OK.value());
 	}
 	
 	@GetMapping
-	public List<Post> getAllPosts() {
-		return postService.getAllPosts();
+	public ResponseJson<List<Post>> getAllPosts() {
+		return new ResponseJson<>(postService.getAllPosts(), HttpStatus.OK.value());
 	}
 	
 	@GetMapping("/{id}")
-	public Post getPostById(@PathVariable String id) {
-		return postService.getPostById(id);
+	public ResponseJson<Post> getPostById(@PathVariable String id) {
+		return new ResponseJson<>(postService.getPostById(id), HttpStatus.OK.value());
 	}
 	
 	@PutMapping("/{id}")
-	public Post editPost(@PathVariable String id, @RequestBody PostDTO postDTO) {
-		return postService.editPost(id, postDTO);
+	public ResponseJson<Post> editPost(@PathVariable String id, @RequestBody PostDTO postDTO) {
+		return new ResponseJson<>(postService.editPost(id, postDTO), HttpStatus.OK.value());
 	}
 	
 	@DeleteMapping("/{id}")

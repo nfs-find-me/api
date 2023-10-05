@@ -18,6 +18,7 @@ public class UserDTO {
 	private String id;
 	
 	@NonNull
+	@Indexed(unique = true)
 	private String username;
 	
 	@NonNull
