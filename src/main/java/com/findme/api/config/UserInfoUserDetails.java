@@ -1,25 +1,28 @@
 package com.findme.api.config;
 
+import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class UserInfoUserDetails implements UserDetails {
 	
-	
-	private String name;
-	private String password;
-	private List<GrantedAuthority> authorities;
+	private final String name;
+	private final String password;
+	private final List<GrantedAuthority> authorities = new ArrayList<>();
 	
 	public UserInfoUserDetails(User userInfo) {
 		name=userInfo.getUsername();
 		password=userInfo.getPassword();
-//		authorities= Arrays.stream(userInfo.getRoles().split(","))
-//				.map(SimpleGrantedAuthority::new)
-//				.collect(Collectors.toList());
+		for (Role role : userInfo.getRoles()) {
+			authorities.add(new SimpleGrantedAuthority(role.toString()));
+		}
+		System.out.println("UserDetails: " + name + " " + password + " " + authorities);
 	}
 	
 	@Override
