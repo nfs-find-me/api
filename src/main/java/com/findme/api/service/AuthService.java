@@ -1,5 +1,6 @@
 package com.findme.api.service;
 
+import com.findme.api.exception.CustomAccessDeniedException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.AuthRequest;
 import com.findme.api.model.Role;
@@ -40,7 +41,12 @@ public class AuthService {
 		this.userService = new UserService(userRepository);
 	}
 	
-	public User register(AuthRequest authRequest) {
+	public User register(AuthRequest authRequest) throws CustomAccessDeniedException {
+		if (userRepository.existsByUsername(authRequest.getUsername())) {
+			throw new CustomAccessDeniedException("Username already exists");
+		} else if (userRepository.existsByEmail(authRequest.getEmail())) {
+			throw new CustomAccessDeniedException("Email already exists");
+		}
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUsername(authRequest.getUsername());
 		userDTO.setEmail(authRequest.getEmail());

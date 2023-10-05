@@ -15,18 +15,19 @@ import java.util.Map;
 
 public class CustomAccessDeniedException extends Exception {
 	
-	public CustomAccessDeniedException() {
+	private String message;
+	
+	public CustomAccessDeniedException(String message) {
 		super();
+		this.message = message;
 	}
 	
 	public CustomAccessDeniedException(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("Access denied");
-		response.setStatus(HttpStatus.FORBIDDEN.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		
 		Map<String, Object> body = new HashMap<>();
-		body.put("status", HttpStatus.FORBIDDEN.value());
-		body.put("message", "Access denied");
+		body.put("status", response.getStatus());
+		body.put("message", message != null ? message : "Access denied");
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(response.getOutputStream(), body);
