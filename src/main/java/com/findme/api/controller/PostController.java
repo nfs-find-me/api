@@ -1,14 +1,18 @@
 package com.findme.api.controller;
 
-import com.cloudinary.*;
-import com.cloudinary.utils.ObjectUtils;
+import com.findme.api.config.UserDetailsServiceImpl;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.PostService;
+import com.findme.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +24,7 @@ import java.util.Map;
 @RequestMapping("/api/post")
 public class PostController {
 	private Map<String,String> currentImage;
+	
 	private final PostService postService;
 	
 	PostMapper postMapper = new PostMapper();
@@ -45,6 +50,7 @@ public class PostController {
 		return new ResponseJson<>(currentImage, HttpStatus.OK.value());
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@GetMapping
 	public ResponseJson<List<Post>> getAllPosts() {
 		return new ResponseJson<>(postService.getAllPosts(), HttpStatus.OK.value());
@@ -56,12 +62,12 @@ public class PostController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseJson<Post> editPost(@PathVariable String id, @RequestBody PostDTO postDTO) {
+	public ResponseJson<Post> editPost(@PathVariable String id, @RequestBody PostDTO postDTO) throws CustomUnauthorizedException {
 		return new ResponseJson<>(postService.editPost(id, postDTO), HttpStatus.OK.value());
 	}
 	
 	@DeleteMapping("/{id}")
-	public void deletePost(@PathVariable String id) {
+	public void deletePost(@PathVariable String id) throws CustomUnauthorizedException {
 		postService.deletePost(id);
 	}
 }

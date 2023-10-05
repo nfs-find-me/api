@@ -2,17 +2,19 @@ package com.findme.api.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.UserMapper;
+import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.UserDTO;
 import com.findme.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,12 @@ public class UserService {
 	@Autowired
 	private Environment environment;
 	
+	public User getUserConnected() {
+		UserDetails userDetails = (UserDetails) org.springframework.security.core.context.SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		return userRepository.findByUsername(userDetails.getUsername());
+	}
+	
 	public User createUser(UserDTO userDTO) {
 		return userRepository.save(userMapper.toEntity(userDTO));
 	}
@@ -46,9 +54,12 @@ public class UserService {
 		return userRepository.findByUsername(username);
 	}
 	
-	public User editUser(String id, UserDTO userDTO) {
+	public User editUser(String id, UserDTO userDTO) throws CustomUnauthorizedException {
 		User user = userRepository.findById(id).orElse(null);
 		if (user != null) {
+			if (getUserConnected().getId().equals(user.getId()) || getUserConnected().getRoles().contains(Role.ADMIN)) {
+				throw new CustomUnauthorizedException("You can't edit this post");
+			}
 			user.setUsername(userDTO.getUsername());
 			user.setEmail(userDTO.getEmail());
 			user.setPassword(userDTO.getPassword());
@@ -63,10 +74,13 @@ public class UserService {
 		}
 	}
 	
-	public void deleteUser(String id) {
+	public void deleteUser(String id) throws CustomUnauthorizedException {
 		User user = userRepository.findById(id).orElse(null);
 		if (user == null) {
 			throw new RuntimeException("User not found");
+		}
+		if (getUserConnected().getId().equals(user.getId()) || getUserConnected().getRoles().contains(Role.ADMIN)) {
+			throw new CustomUnauthorizedException("You can't edit this post");
 		}
 		userRepository.deleteById(id);
 	}

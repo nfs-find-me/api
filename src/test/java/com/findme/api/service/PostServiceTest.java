@@ -1,5 +1,6 @@
 package com.findme.api.service;
 
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
@@ -106,13 +107,13 @@ class PostServiceTest {
 	}
 	
 	@Test
-	void editPost() {
+	void editPost() throws CustomUnauthorizedException {
 		Post postById = postService.editPost("1", getPostDTO());
 		Assert.assertNotNull(postById);
 	}
 	
 	@Test
-	void deletePost() {
+	void deletePost() throws CustomUnauthorizedException {
 		postService.deletePost("1");
 		Mockito.verify(postRepository, Mockito.times(1)).deleteById("1");
 	}

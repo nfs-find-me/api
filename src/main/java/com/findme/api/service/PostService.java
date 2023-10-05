@@ -2,7 +2,10 @@ package com.findme.api.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.model.Post;
+import com.findme.api.model.Role;
+import com.findme.api.model.User;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,10 @@ import java.util.Map;
 
 @Service
 public class PostService {
+	
+	@Autowired
+	private UserService userService;
+	
 	PostRepository postRepository;
 
 	@Autowired
@@ -39,7 +46,10 @@ public class PostService {
 		return postRepository.findById(id).orElse(null);
 	}
 	
-	public Post editPost(String id, PostDTO postDTO) {
+	public Post editPost(String id, PostDTO postDTO) throws CustomUnauthorizedException {
+		if (!userService.getUserConnected().getId().equals(postDTO.getUserId()) || userService.getUserConnected().getRoles().contains(Role.ADMIN)) {
+			throw new CustomUnauthorizedException("You can't edit this post");
+		}
 		Post post = postRepository.findById(id).orElse(null);
 		if (post != null) {
 			post.setUserId(postDTO.getUserId());
@@ -55,10 +65,13 @@ public class PostService {
 		}
 	}
 	
-	public void deletePost(String id) {
+	public void deletePost(String id) throws CustomUnauthorizedException {
 		Post post = postRepository.findById(id).orElse(null);
 		if (post == null) {
-			throw new RuntimeException("Post not found");
+			throw new CustomUnauthorizedException("Post not found");
+		}
+		if (!userService.getUserConnected().getId().equals(post.getUserId()) || userService.getUserConnected().getRoles().contains(Role.ADMIN)) {
+			throw new CustomUnauthorizedException("You can't delete this post");
 		}
 		postRepository.deleteById(id);
 	}

@@ -12,6 +12,13 @@ import java.util.Map;
 
 public class CustomUnauthorizedException extends Exception {
 	
+	private String message;
+	
+	public CustomUnauthorizedException(String message) {
+		super();
+		this.message = message;
+	}
+	
 	public CustomUnauthorizedException(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		System.out.println("Unauthorized");
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
