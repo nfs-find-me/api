@@ -50,7 +50,6 @@ public class UserController {
 		}
 		currentImage = userService.uploadAvatar(file);
 		currentUser.get().setAvatar(currentImage);
-		System.out.println(currentUser.get());
 		userRepository.save(currentUser.get());
 		return new ResponseJson<>(currentImage, HttpStatus.OK.value());
 	}
