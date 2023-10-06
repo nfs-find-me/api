@@ -39,7 +39,7 @@ public class UserController {
 	}
 
 	@PostMapping("/avatar")
-	public ResponseJson<String> createPost(@RequestParam("file") MultipartFile file,@Param("user") String user) throws IOException {
+	public ResponseJson<String> changeAvatar(@RequestParam("file") MultipartFile file,@Param("user") String user) throws IOException {
 		if(user==null || user.isBlank()){
 			throw new IOException("No user provided");
 		}
@@ -63,7 +63,7 @@ public class UserController {
 		}
 	}
 	@GetMapping("/follow")
-	public ResponseJson<User> createPost(@RequestParam("sender") String sender, @RequestParam("recipient") String recipient) throws IOException {
+	public ResponseJson<User> followUser(@RequestParam("sender") String sender, @RequestParam("recipient") String recipient) throws IOException {
 		System.out.println(sender);
 		if(sender==null || recipient==null || sender.isBlank() || recipient.isBlank()){
 			throw new IOException("Missing data");
