@@ -27,6 +27,9 @@ public class PostController {
 	
 	private final PostService postService;
 	
+	@Autowired
+	private UserService userService;
+	
 	PostMapper postMapper = new PostMapper();
 	
 	@Autowired
@@ -56,9 +59,44 @@ public class PostController {
 		return new ResponseJson<>(postService.getAllPosts(), HttpStatus.OK.value());
 	}
 	
+	@GetMapping("/filters/most-viewed")
+	public ResponseJson<List<Post>> filterPostsByMostViewed() {
+		return new ResponseJson<>(postService.getAllMostViewedPosts(), HttpStatus.OK.value());
+	}
+	
+	@GetMapping("/filters/most-liked")
+	public ResponseJson<List<Post>> filterPostsByMostLiked() {
+		return new ResponseJson<>(postService.getAllMostLikedPosts(), HttpStatus.OK.value());
+	}
+	
+	@GetMapping("/filters/most-popular")
+	public ResponseJson<List<Post>> filterPostsByMostPopular() {
+		return new ResponseJson<>(postService.getAllMostPopularPosts(), HttpStatus.OK.value());
+	}
+	
+	@GetMapping("/filters/most-recent")
+	public ResponseJson<List<Post>> filterPostsByMostRecent() {
+		return new ResponseJson<>(postService.getAllMostRecentPosts(), HttpStatus.OK.value());
+	}
+	
+	@GetMapping("/filters/oldest")
+	public ResponseJson<List<Post>> filterPostsByOldest() {
+		return new ResponseJson<>(postService.getAllOldestPosts(), HttpStatus.OK.value());
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseJson<Post> getPostById(@PathVariable String id) {
 		return new ResponseJson<>(postService.getPostById(id), HttpStatus.OK.value());
+	}
+	
+	@PostMapping("/{id}/toggle-like")
+	public ResponseJson<Void> toggleLike(@PathVariable String id) throws Exception {
+		try {
+			postService.toggleLike(id);
+			return new ResponseJson<>(null, HttpStatus.OK.value());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 	
 	@PutMapping("/{id}")

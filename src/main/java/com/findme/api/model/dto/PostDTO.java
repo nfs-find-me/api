@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -21,9 +22,9 @@ public class PostDTO {
 	
 	private Post.Geolocation geolocation;
 	
-	private Post.View view;
+	private List<Post.View> view;
 	
-	private Post.Like like;
+	private List<Post.Like> like;
 	
 	private boolean verified;
 }

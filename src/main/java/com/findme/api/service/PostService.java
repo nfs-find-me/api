@@ -8,6 +8,7 @@ import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
+import com.findme.api.repository.custom.PostRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -25,25 +26,77 @@ public class PostService {
 	private UserService userService;
 	
 	PostRepository postRepository;
+	
+	PostRepositoryCustom postRepositoryCustom;
 
 	@Autowired
 	private Environment environment;
 	
 	@Autowired
-	public PostService(PostRepository postRepository) {
+	public PostService(PostRepository postRepository, PostRepositoryCustom postRepositoryCustom) {
 		this.postRepository = postRepository;
+		this.postRepositoryCustom = postRepositoryCustom;
 	}
 	
 	public Post createPost(Post post) {
 		return postRepository.save(post);
 	}
 	
+	public void addView(Post post) {
+		List<Post.View> views = post.getView();
+		// On vérifie si l'utilisateur a déjà vu le post
+		if (views.stream().anyMatch(view -> view.getUserId().equals(userService.getUserConnected().getId()))) {
+			return;
+		}
+		views.add(new Post.View(userService.getUserConnected().getId()));
+		postRepository.save(post);
+	}
+	
+	public void toggleLike(String id) {
+		Post post = postRepository.findById(id).orElse(null);
+		if (post == null) {
+			throw new RuntimeException("Post not found");
+		}
+		List<Post.Like> likes = post.getLike();
+		if (likes.stream().anyMatch(like -> like.getUserId().equals(userService.getUserConnected().getId()))) {
+			likes.removeIf(like -> like.getUserId().equals(userService.getUserConnected().getId()));
+			postRepository.save(post);
+		} else {
+			likes.add(new Post.Like(userService.getUserConnected().getId()));
+			postRepository.save(post);
+		}
+	}
+	
 	public List<Post> getAllPosts() {
 		return postRepository.findAll();
 	}
 	
+	// Filters
+	public List<Post> getAllMostViewedPosts() {
+		return postRepositoryCustom.findAllMostViewedPosts();
+	}
+	
+	public List<Post> getAllMostLikedPosts() {
+		return postRepositoryCustom.findAllMostLikedPosts();
+	}
+	
+	public List<Post> getAllMostPopularPosts() {
+		return postRepositoryCustom.findAllMostPopularPosts();
+	}
+	
+	public List<Post> getAllMostRecentPosts() {
+		return postRepositoryCustom.findAllMostRecentPosts();
+	}
+	
+	public List<Post> getAllOldestPosts() {
+		return postRepositoryCustom.findAllOldestPosts();
+	}
+	
+	
 	public Post getPostById(String id) {
-		return postRepository.findById(id).orElse(null);
+		Post post = postRepository.findById(id).orElse(null);
+		addView(post);
+		return post;
 	}
 	
 	public Post editPost(String id, PostDTO postDTO) throws CustomUnauthorizedException {
@@ -56,8 +109,8 @@ public class PostService {
 			post.setPicture(postDTO.getPicture());
 			post.setDescription(postDTO.getDescription());
 			post.setGeolocation(postDTO.getGeolocation());
-			post.setView(postDTO.getView());
-			post.setLike(postDTO.getLike());
+			post.setView(List.of(postDTO.getView()));
+			post.setLike(List.of(postDTO.getLike()));
 			post.setVerified(postDTO.isVerified());
 			return postRepository.save(post);
 		} else {
