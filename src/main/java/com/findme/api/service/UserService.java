@@ -57,7 +57,7 @@ public class UserService {
 	public User editUser(String id, UserDTO userDTO) throws CustomUnauthorizedException {
 		User user = userRepository.findById(id).orElse(null);
 		if (user != null) {
-			if (getUserConnected().getId().equals(user.getId()) || getUserConnected().getRoles().contains(Role.ADMIN)) {
+			if (!getUserConnected().getRoles().contains(Role.ADMIN) && getUserConnected().getId().equals(user.getId())) {
 				throw new CustomUnauthorizedException("You can't edit this post");
 			}
 			user.setUsername(userDTO.getUsername());
@@ -79,7 +79,7 @@ public class UserService {
 		if (user == null) {
 			throw new RuntimeException("User not found");
 		}
-		if (getUserConnected().getId().equals(user.getId()) || getUserConnected().getRoles().contains(Role.ADMIN)) {
+		if (!getUserConnected().getRoles().contains(Role.ADMIN) && getUserConnected().getId().equals(user.getId())) {
 			throw new CustomUnauthorizedException("You can't edit this post");
 		}
 		userRepository.deleteById(id);
