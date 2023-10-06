@@ -5,6 +5,7 @@ import com.findme.api.model.User;
 import com.findme.api.repository.UserRepository;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.UserService;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,24 @@ public class UserController {
 		currentUser.get().setAvatar(currentImage);
 		userRepository.save(currentUser.get());
 		return new ResponseJson<>(currentImage, HttpStatus.OK.value());
+	}
+
+	public static class FollowArgs {
+		private String sender;
+		private String recipient;
+
+		public FollowArgs(String sender, String recipient){
+			this.sender = sender;
+			this.recipient = recipient;
+		}
+	}
+	@GetMapping("/follow")
+	public ResponseJson<User> createPost(@RequestParam("sender") String sender, @RequestParam("recipient") String recipient) throws IOException {
+		System.out.println(sender);
+		if(sender==null || recipient==null || sender.isBlank() || recipient.isBlank()){
+			throw new IOException("Missing data");
+		}
+		return new ResponseJson<>(userService.followUser(sender,recipient), HttpStatus.OK.value());
 	}
 	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")

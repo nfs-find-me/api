@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -37,8 +38,10 @@ public class User {
 
 	private String confirmationCode;
 
-	private List<User> friends = new ArrayList<>();
-	
+	private List<ObjectId> followers = new ArrayList<>();
+
+	private List<ObjectId> following = new ArrayList<>();
+
 	private List<Role> roles = List.of(Role.USER);
 	
 	private Integer score = 0;
