@@ -1,5 +1,6 @@
 package com.findme.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -29,6 +30,7 @@ public class User {
 	private String email;
 	
 	@NonNull
+	@JsonIgnore
 	private String password;
 	
 	private String avatar;
