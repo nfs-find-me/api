@@ -12,15 +12,11 @@ import java.util.Map;
 
 public class CustomUnauthorizedException extends Exception {
 	
-	private String message;
-	
 	public CustomUnauthorizedException(String message) {
-		super();
-		this.message = message;
+		super(message);
 	}
 	
-	public CustomUnauthorizedException(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("Unauthorized");
+	public CustomUnauthorizedException(HttpServletResponse response) throws IOException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		
@@ -30,6 +26,5 @@ public class CustomUnauthorizedException extends Exception {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(response.getOutputStream(), body);
-		
 	}
 }

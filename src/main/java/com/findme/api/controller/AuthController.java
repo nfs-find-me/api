@@ -1,6 +1,7 @@
 package com.findme.api.controller;
 
 import com.findme.api.exception.CustomAccessDeniedException;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.model.AuthRequest;
 import com.findme.api.model.User;
 import com.findme.api.response.ResponseJson;
@@ -26,7 +27,7 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 	
 	@PostMapping("/register")
-	public ResponseJson<User> register(@RequestBody AuthRequest authRequest) throws CustomAccessDeniedException {
+	public ResponseJson<User> register(@RequestBody AuthRequest authRequest) throws CustomUnauthorizedException {
 		return new ResponseJson<>(userService.register(authRequest), HttpStatus.OK.value());
 	}
 	

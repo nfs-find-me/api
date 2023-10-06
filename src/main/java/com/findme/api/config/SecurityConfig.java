@@ -1,7 +1,7 @@
 package com.findme.api.config;
 
 import com.findme.api.exception.CustomAccessDeniedException;
-import com.findme.api.exception.CustomUnauthorizedException;
+import com.findme.api.exception.CustomBadCredentialsException;
 import com.findme.api.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,26 +48,19 @@ public class SecurityConfig {
 							// Créez une instance de votre exception personnalisée et la lancez
 							// Que si request provient de /api/auth/register ou /api/auth/login
 							if(request.getRequestURI().equals("/api/auth/register") || request.getRequestURI().equals("/api/auth/login")) {
-								CustomUnauthorizedException customException = new CustomUnauthorizedException(request, response);
+								CustomBadCredentialsException customException = new CustomBadCredentialsException(response);
 								try {
 									throw customException;
-								} catch (CustomUnauthorizedException ex) {
+								} catch (CustomBadCredentialsException ex) {
 									throw new RuntimeException(ex);
 								}
 							} else {
-								CustomAccessDeniedException customException = new CustomAccessDeniedException(request, response);
+								CustomAccessDeniedException customException = new CustomAccessDeniedException(response);
 								try {
 									throw customException;
 								} catch (CustomAccessDeniedException ex) {
 									throw new RuntimeException(ex);
 								}	
-							}
-						})
-						.accessDeniedHandler((request, response, accessDeniedException) -> {
-							try {
-								throw new CustomAccessDeniedException(request, response);
-							} catch (CustomAccessDeniedException ex) {
-								throw new RuntimeException(ex);
 							}
 						}))
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
