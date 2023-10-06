@@ -65,11 +65,6 @@ public class PostController {
 	public ResponseJson<Post> editPost(@PathVariable String id, @RequestBody PostDTO postDTO) throws CustomUnauthorizedException {
 		return new ResponseJson<>(postService.editPost(id, postDTO), HttpStatus.OK.value());
 	}
-
-	@PutMapping("/like/{id}")
-	public ResponseJson<Post> editPost(@PathVariable String id, @RequestParam String userId) throws CustomUnauthorizedException {
-		return new ResponseJson<>(postService.likePost(id, userId), HttpStatus.OK.value());
-	}
 	
 	@DeleteMapping("/{id}")
 	public void deletePost(@PathVariable String id) throws CustomUnauthorizedException {
