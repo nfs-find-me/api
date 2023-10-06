@@ -46,10 +46,10 @@ public class User {
 	private String biography;
 	
 	@NonNull
-	private LocalDateTime createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 	
 	@NonNull
-	private LocalDateTime updatedAt;
+	private LocalDateTime updatedAt ;
 	
 	
 
