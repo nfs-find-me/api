@@ -38,7 +38,7 @@ class PostServiceTest {
 	
 	@BeforeEach
 	public void setUp() {
-		postService = new PostService(postRepository);
+		postService = new PostService(postRepository, null);
 		postRepository = Mockito.mock(PostRepository.class);
 		Mockito.when(postRepository.save(Mockito.any(Post.class))).thenAnswer(new Answer<Object>() {
 			@Override
@@ -74,12 +74,10 @@ class PostServiceTest {
 		geolocation.setAddress("address");
 		postDTO.setGeolocation(geolocation);
 		
-		Post.View view = new Post.View();
-		view.setUserId("1");
+		Post.View view = new Post.View("1");
 		postDTO.setView(view);
 		
-		Post.Like like = new Post.Like();
-		like.setUserId("1");
+		Post.Like like = new Post.Like("1");
 		postDTO.setLike(like);
 		postDTO.setVerified(true);
 		

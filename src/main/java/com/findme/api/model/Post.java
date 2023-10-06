@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -28,9 +30,9 @@ public class Post {
 	@NonNull
 	private Geolocation geolocation;
 	
-	private View view;
+	private List<View> view = new ArrayList<>();
 	
-	private Like like;
+	private List<Like> like = new ArrayList<>();
 	
 	private boolean verified = false;
 	
@@ -55,6 +57,11 @@ public class Post {
 	
 	@Data
 	public static class View {
+		
+		public View(String userId) {
+			this.userId = userId;
+		}
+		
 		public String userId;
 		
 		public LocalDateTime createdAt = LocalDateTime.now();
@@ -62,6 +69,11 @@ public class Post {
 	
 	@Data
 	public static class Like {
+		
+		public Like(String userId) {
+			this.userId = userId;
+		}
+		
 		private String userId;
 		
 		private LocalDateTime createdAt = LocalDateTime.now();
