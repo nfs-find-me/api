@@ -45,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 			} else {
 				try {
-					throw new CustomAccessDeniedException(request, response);
+					throw new CustomAccessDeniedException(response);
 				} catch (CustomAccessDeniedException e) {
 					throw new RuntimeException(e);
 				}

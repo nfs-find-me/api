@@ -1,6 +1,6 @@
 package com.findme.api.service;
 
-import com.findme.api.exception.CustomAccessDeniedException;
+import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.AuthRequest;
 import com.findme.api.model.Role;
@@ -16,8 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 @Service
@@ -41,11 +39,11 @@ public class AuthService {
 		this.userService = new UserService(userRepository);
 	}
 	
-	public User register(AuthRequest authRequest) throws CustomAccessDeniedException {
+	public User register(AuthRequest authRequest) throws CustomUnauthorizedException {
 		if (userRepository.existsByUsername(authRequest.getUsername())) {
-			throw new CustomAccessDeniedException("Username already exists");
+			throw new CustomUnauthorizedException("Username already exists");
 		} else if (userRepository.existsByEmail(authRequest.getEmail())) {
-			throw new CustomAccessDeniedException("Email already exists");
+			throw new CustomUnauthorizedException("Email already exists");
 		}
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUsername(authRequest.getUsername());
