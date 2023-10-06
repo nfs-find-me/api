@@ -3,13 +3,11 @@ package com.findme.api.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.GeneratedValue;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Data
@@ -32,7 +30,7 @@ public class Post {
 	
 	private View view;
 	
-	private List<Like> like;
+	private Like like;
 	
 	private boolean verified = false;
 	
@@ -64,7 +62,7 @@ public class Post {
 	
 	@Data
 	public static class Like {
-		private ObjectId userId;
+		private String userId;
 		
 		private LocalDateTime createdAt = LocalDateTime.now();
 	}

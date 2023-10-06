@@ -8,7 +8,6 @@ import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -60,18 +59,6 @@ public class PostService {
 			post.setView(postDTO.getView());
 			post.setLike(postDTO.getLike());
 			post.setVerified(postDTO.isVerified());
-			return postRepository.save(post);
-		} else {
-			throw new RuntimeException("Post not found");
-		}
-	}
-
-	public Post likePost(String id, String userId) throws CustomUnauthorizedException {
-		Post post = postRepository.findById(id).orElse(null);
-		if (post != null) {
-			List<Post.Like> newLikes = post.getLike();
-			ObjectId newUserId = new ObjectId(userId);
-			Post.Like newL
 			return postRepository.save(post);
 		} else {
 			throw new RuntimeException("Post not found");
