@@ -19,7 +19,8 @@ public class UserMapper implements MapperInstance<UserDTO, User> {
 		userDTO.setEmail(entity.getEmail());
 		userDTO.setPassword(entity.getPassword());
 		userDTO.setAvatar(entity.getAvatar());
-		userDTO.setFriends(entity.getFriends());
+		userDTO.setFollowers(entity.getFollowers());
+		userDTO.setFollowing(entity.getFollowing());
 		userDTO.setRoles(entity.getRoles());
 		userDTO.setScore(entity.getScore());
 		userDTO.setBiography(entity.getBiography());
@@ -43,7 +44,8 @@ public class UserMapper implements MapperInstance<UserDTO, User> {
 		user.setEmail(dto.getEmail());
 		user.setPassword(dto.getPassword());
 		user.setAvatar(dto.getAvatar());
-		user.setFriends(dto.getFriends());
+		user.setFollowers(dto.getFollowers());
+		user.setFollowing(dto.getFollowing());
 		user.setRoles(dto.getRoles());
 		user.setScore(dto.getScore());
 		user.setBiography(dto.getBiography());

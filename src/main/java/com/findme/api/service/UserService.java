@@ -8,6 +8,7 @@ import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.UserDTO;
 import com.findme.api.repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -64,7 +66,8 @@ public class UserService {
 			user.setEmail(userDTO.getEmail());
 			user.setPassword(userDTO.getPassword());
 			user.setAvatar(userDTO.getAvatar());
-			user.setFriends(userDTO.getFriends());
+			user.setFollowers(userDTO.getFollowers());
+			user.setFollowing(userDTO.getFollowing());
 			user.setRoles(userDTO.getRoles());
 			user.setScore(userDTO.getScore());
 			user.setBiography(userDTO.getBiography());
@@ -104,5 +107,36 @@ public class UserService {
 		}
 		System.out.println(((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/"));
 		return ((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/");
+	}
+
+	//	FOLLOW UNFOLLOW
+		public User followUser(String sender, String recipient) {
+		Optional<User> senderUser = userRepository.findById(sender);
+		if (senderUser.isEmpty()) {
+			throw new RuntimeException("Sender user not found");
+		}
+		Optional<User> targetUser = userRepository.findById(recipient);
+		if (targetUser.isEmpty()) {
+			throw new RuntimeException("Target user not found");
+		}
+
+		ObjectId targetId=new ObjectId(targetUser.get().getId());
+		ObjectId  senderId=new ObjectId(senderUser.get().getId());
+		List<ObjectId> newFollowers = targetUser.get().getFollowers();
+		List<ObjectId> newFollowing= senderUser.get().getFollowing();
+
+		if (newFollowing.contains(targetId) || newFollowers.contains(senderId)) {
+			newFollowing.remove(targetId);
+			newFollowers.remove(senderId);
+		} else {
+			newFollowers.add(senderId);
+			newFollowing.add(targetId);
+		}
+
+		targetUser.get().setFollowers(newFollowers);
+		senderUser.get().setFollowing(newFollowing);
+		userRepository.save(targetUser.get());
+		userRepository.save(senderUser.get());
+		return senderUser.get();
 	}
 }
