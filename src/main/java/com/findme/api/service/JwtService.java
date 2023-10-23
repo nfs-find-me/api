@@ -21,6 +21,9 @@ public class JwtService {
 	@Value("${jwt.secret}")
 	public String secret;
 	
+	// 1 day
+	private long expiration = System.currentTimeMillis()+ 86400000;
+	
 	
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -64,12 +67,16 @@ public class JwtService {
 				.setClaims(claims)
 				.setSubject(userName)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
+				.setExpiration(new Date(expiration))
 				.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
 	}
 	
 	private Key getSignKey() {
 		byte[] keyBytes= Decoders.BASE64.decode(secret);
 		return Keys.hmacShaKeyFor(keyBytes);
+	}
+	
+	public long getExpiration() {
+		return expiration;
 	}
 }

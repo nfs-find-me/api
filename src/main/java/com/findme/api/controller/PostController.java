@@ -7,6 +7,7 @@ import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.PostService;
+import com.findme.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

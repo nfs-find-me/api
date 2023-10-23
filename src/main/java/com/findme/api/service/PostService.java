@@ -108,8 +108,8 @@ public class PostService {
 			post.setPicture(postDTO.getPicture());
 			post.setDescription(postDTO.getDescription());
 			post.setGeolocation(postDTO.getGeolocation());
-			post.setView(List.of(postDTO.getView()));
-			post.setLike(List.of(postDTO.getLike()));
+			post.setView(postDTO.getView());
+			post.setLike(postDTO.getLike());
 			post.setVerified(postDTO.isVerified());
 			return postRepository.save(post);
 		} else {
