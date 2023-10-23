@@ -3,6 +3,7 @@ package com.findme.api.service;
 import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.AuthRequest;
+import com.findme.api.model.AuthResponse;
 import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.UserDTO;
@@ -32,6 +33,9 @@ public class AuthService {
 	UserService userService;
 	
 	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+	
+	@Autowired
+	JwtService jwtService;
 	
 	@Autowired
 	public AuthService(UserRepository userRepository) {
@@ -127,5 +131,14 @@ public class AuthService {
 		}
 		userRepository.save(user.get());
 		return check;
+	}
+	
+	public AuthResponse authResponse(User user, String username) {
+		user.setRefreshToken(jwtService.createRefreshToken());
+		userRepository.save(user);
+		AuthResponse authResponse = new AuthResponse();
+		authResponse.setJwtToken(jwtService.generateToken(username));
+		authResponse.setRefreshToken(user.getRefreshToken());
+		return authResponse;
 	}
 }

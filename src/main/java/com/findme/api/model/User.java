@@ -54,7 +54,5 @@ public class User {
 	@NonNull
 	private LocalDateTime updatedAt ;
 	
-	
-
-	
+	private String refreshToken;
 }
