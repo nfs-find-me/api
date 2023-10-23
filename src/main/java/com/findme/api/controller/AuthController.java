@@ -36,7 +36,7 @@ public class AuthController {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
 		);
-		return new ResponseJson<>(jwtService.generateToken(authRequest.getUsername()), HttpStatus.OK.value());
+		return new ResponseJson<>(jwtService.generateToken(authRequest.getUsername()), HttpStatus.OK.value(), jwtService.getExpiration());
 	}
 	@GetMapping("/mail-verif")
 	public boolean checkMail(@Param("id") String id, @Param("code") String code) throws Exception {
