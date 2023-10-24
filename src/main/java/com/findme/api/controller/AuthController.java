@@ -66,14 +66,17 @@ public class AuthController {
 	
 	@PostMapping("/refresh")
 	public ResponseJson<AuthResponse> refreshToken(@RequestBody AuthRequest authRequest) throws CustomUnauthorizedException, CustomAccessDeniedException {
-		if (authRequest.getRefreshToken() == null && authRequest.getUsername() == null) {
+		if (authRequest.getRefreshToken() == null && authRequest.getLogin() == null) {
 			throw new CustomUnauthorizedException("Invalid credentials");
 		}
-		User user = userService.getUserByUsername(authRequest.getUsername());
+		User user = userService.getUserByLogin(authRequest.getLogin());
+		if (user == null) {
+			throw new CustomAccessDeniedException("User not found");
+		}
 		if (!user.getRefreshToken().equals(authRequest.getRefreshToken())) {
 			throw new CustomAccessDeniedException("Refresh token invalid");
 		}
-		return new ResponseJson<>(authService.authResponse(user, authRequest.getUsername()), HttpStatus.OK.value(), jwtService.getExpiration());
+		return new ResponseJson<>(authService.authResponse(user, authRequest.getLogin()), HttpStatus.OK.value(), jwtService.getExpiration());
 	}
 	
 	@GetMapping("/mail-verif")

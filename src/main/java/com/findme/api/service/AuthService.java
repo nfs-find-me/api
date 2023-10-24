@@ -88,7 +88,7 @@ public class AuthService {
 			buffer.append((char) randomLimitedInt);
 		}
 		String confirmationCode = buffer.toString();
-		List<User> userList = userRepository.findByEmail(email);
+		List<User> userList = userRepository.findAllByEmail(email);
 		if(userList.get(0) == null) {
 			throw new Exception("No user");
 		}

@@ -56,6 +56,10 @@ public class UserService {
 		return userRepository.findByUsername(username);
 	}
 	
+	public User getUserByLogin(String login) {
+		return userRepository.findByEmailOrUsername(login, login);
+	}
+	
 	public User editUser(String id, UserDTO userDTO) throws CustomUnauthorizedException {
 		User user = userRepository.findById(id).orElse(null);
 		if (user != null) {
