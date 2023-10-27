@@ -14,11 +14,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     
     @Autowired
     private MongoTemplate mongoTemplate;
-    
-    @Override
-    public List<Post> findAllPostsPublishedByFriends(String userId) {
-       return null;
-    }
 
     @Override
     public List<Post> findAllMostViewedPosts() {

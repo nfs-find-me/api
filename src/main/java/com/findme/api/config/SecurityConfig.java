@@ -45,8 +45,6 @@ public class SecurityConfig {
 				)
 				.exceptionHandling(e -> e
 						.authenticationEntryPoint((request, response, authException) -> {
-							// Créez une instance de votre exception personnalisée et la lancez
-							// Que si request provient de /api/auth/register ou /api/auth/login
 							if(request.getRequestURI().equals("/api/auth/register") || request.getRequestURI().equals("/api/auth/login")) {
 								CustomBadCredentialsException customException = new CustomBadCredentialsException(response);
 								try {

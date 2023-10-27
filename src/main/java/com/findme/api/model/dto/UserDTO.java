@@ -1,7 +1,6 @@
 package com.findme.api.model.dto;
 
 import com.findme.api.model.Role;
-import com.findme.api.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
