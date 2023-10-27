@@ -9,7 +9,6 @@ public class EmailTemplates {
 
 
     public Message mailConfMessage(User user, Environment environment) {
-        System.out.println("template");
         return Message.builder()
                 .from("FindMe <"+environment.getProperty("mailgun.email")+">")
                 .to(user.getEmail())
