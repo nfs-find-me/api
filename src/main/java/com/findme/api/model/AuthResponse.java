@@ -7,4 +7,6 @@ public class AuthResponse {
 	public String jwtToken;
 	
 	public String refreshToken;
+	
+	public String userId;
 }
