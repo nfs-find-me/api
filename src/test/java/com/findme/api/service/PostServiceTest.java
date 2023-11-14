@@ -75,10 +75,10 @@ class PostServiceTest {
 		postDTO.setGeolocation(geolocation);
 		
 		Post.View view = new Post.View("1");
-		postDTO.setView(view);
+		postDTO.setView(List.of(view));
 		
 		Post.Like like = new Post.Like("1");
-		postDTO.setLike(like);
+		postDTO.setLike(List.of(like));
 		postDTO.setVerified(true);
 		
 		return postDTO;
