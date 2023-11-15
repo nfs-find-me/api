@@ -44,13 +44,14 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseJson<AuthResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws CustomAccessDeniedException {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-		);
-		User user = userService.getUserByUsername(authRequest.getUsername());
+		// Trouver l'utilisateur par son login (username ou email)
+		User user = userRepository.findByEmailOrUsername(authRequest.getEmail(), authRequest.getUsername());
 		if (user == null) {
 			throw new CustomAccessDeniedException("User not found");
 		}
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(user.getUsername(), authRequest.getPassword())
+		);
 		if (authRequest.getRefreshToken() != null) {
 			if (Objects.requireNonNull(user).getRefreshToken().equals(authRequest.getRefreshToken())) {
 				throw new CustomAccessDeniedException("Refresh token not found");
@@ -59,9 +60,10 @@ public class AuthController {
 		user.setRefreshToken(jwtService.createRefreshToken());
 		userRepository.save(user);
 		AuthResponse authResponse = new AuthResponse();
-		authResponse.setJwtToken(jwtService.generateToken(authRequest.getUsername()));
+		authResponse.setJwtToken(jwtService.generateToken(user.getUsername()));
 		authResponse.setRefreshToken(user.getRefreshToken());
 		authResponse.setUserId(user.getId());
+		authResponse.setUsername(user.getUsername());
 		return new ResponseJson<>(authResponse, HttpStatus.OK.value(), jwtService.getExpiration());
 	}
 	

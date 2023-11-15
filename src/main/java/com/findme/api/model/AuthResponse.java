@@ -9,4 +9,6 @@ public class AuthResponse {
 	public String refreshToken;
 	
 	public String userId;
+	
+	public String username;
 }
