@@ -37,12 +37,14 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/avatar")
-	public ResponseJson<String> changeAvatar(@RequestParam("file") MultipartFile file,@Param("user") String user) throws IOException {
-		if(user==null || user.isBlank()){
+	@PostMapping("/avatar/{userId}")
+	public ResponseJson<String> changeAvatar(@RequestParam("file") MultipartFile file, @PathVariable String userId) throws IOException {
+		System.out.println("user: "+userId);
+		if(userId==null || userId.isBlank()){
 			throw new IOException("No user provided");
 		}
-		Optional<User> currentUser = userRepository.findById(user);
+		Optional<User> currentUser = userRepository.findById(userId);
+		System.out.println("user: "+currentUser);
 		if(currentUser.isEmpty()){
 			throw new IOException("No user found");
 		}
