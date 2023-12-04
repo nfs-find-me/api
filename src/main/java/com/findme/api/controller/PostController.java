@@ -2,8 +2,6 @@ package com.findme.api.controller;
 
 import com.findme.api.exception.CustomAccessDeniedException;
 import com.findme.api.exception.CustomUnauthorizedException;
-import com.cloudinary.*;
-import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.exception.CustomException;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;

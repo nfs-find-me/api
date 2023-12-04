@@ -1,7 +1,5 @@
 package com.findme.api.config;
 
-import com.findme.api.exception.CustomAccessDeniedException;
-import com.findme.api.exception.CustomBadCredentialsException;
 import com.findme.api.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,54 +55,6 @@ public class SecurityConfig {
 						).permitAll()
 						.anyRequest().authenticated()
 				)
-<<<<<<< HEAD
-				.exceptionHandling(e -> e
-						.authenticationEntryPoint((request, response, authException) -> {
-							if(request.getRequestURI().equals("/api/auth/register") || request.getRequestURI().equals("/api/auth/login")) {
-								CustomBadCredentialsException customException = new CustomBadCredentialsException(response);
-								try {
-									throw customException;
-								} catch (CustomBadCredentialsException ex) {
-									throw new RuntimeException(ex);
-								}
-							} else {
-								CustomAccessDeniedException customException = new CustomAccessDeniedException(response);
-								try {
-									throw customException;
-								} catch (CustomAccessDeniedException ex) {
-									throw new RuntimeException(ex);
-								}	
-							}
-						}))
-=======
-//				.exceptionHandling(e -> e
-//						.authenticationEntryPoint((request, response, authException) -> {
-//							// Créez une instance de votre exception personnalisée et la lancez
-//							// Que si request provient de /api/auth/register ou /api/auth/login
-//							if(request.getRequestURI().equals("/api/auth/register") || request.getRequestURI().equals("/api/auth/login")) {
-//								CustomUnauthorizedException customException = new CustomUnauthorizedException(request, response);
-//								try {
-//									throw customException;
-//								} catch (CustomUnauthorizedException ex) {
-//									throw new RuntimeException(ex);
-//								}
-//							} else {
-//								CustomAccessDeniedException customException = new CustomAccessDeniedException(request, response);
-//								try {
-//									throw customException;
-//								} catch (CustomAccessDeniedException ex) {
-//									throw new RuntimeException(ex);
-//								}	
-//							}
-//						})
-//						.accessDeniedHandler((request, response, accessDeniedException) -> {
-//							try {
-//								throw new CustomAccessDeniedException(request, response);
-//							} catch (CustomAccessDeniedException ex) {
-//								throw new RuntimeException(ex);
-//							}
-//						}))
->>>>>>> aee851f (Update exception with upload)
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(Customizer.withDefaults())
 				.addFilterAfter(authFilter, BasicAuthenticationFilter.class)
