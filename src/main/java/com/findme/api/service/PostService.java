@@ -9,6 +9,7 @@ import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
 import com.findme.api.repository.custom.PostRepositoryCustom;
 import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -177,6 +178,11 @@ public class PostService {
 		
 		CloseableHttpResponse response = httpclient.execute(httppost);
 		
+		if (response.getStatusLine().getStatusCode() != 200) {
+			convFile.delete();
+			throw new RuntimeException("Image not uploaded");
+		}
+		
 		HttpEntity responseEntity = response.getEntity();
 		
 		if (responseEntity != null) {
@@ -199,6 +205,7 @@ public class PostService {
 			}
 			data.put("url",(String) upload.get("url"));
 			data.put("thumbnail_url", ((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/"));
+			convFile.delete();
 		} else {
 			convFile.delete();
 			throw new RuntimeException("Image not uploaded");
