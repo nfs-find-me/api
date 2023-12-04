@@ -6,7 +6,6 @@ import com.findme.api.repository.UserRepository;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

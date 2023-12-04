@@ -1,7 +1,5 @@
 package com.findme.api.config;
 
-import com.findme.api.exception.CustomAccessDeniedException;
-import com.findme.api.exception.CustomBadCredentialsException;
 import com.findme.api.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
