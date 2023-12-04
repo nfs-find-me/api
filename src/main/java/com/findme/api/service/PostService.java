@@ -3,11 +3,13 @@ package com.findme.api.service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.exception.CustomUnauthorizedException;
+import com.findme.api.exception.CustomException;
 import com.findme.api.model.Post;
 import com.findme.api.model.Role;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
 import com.findme.api.repository.custom.PostRepositoryCustom;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,7 +22,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -155,7 +159,7 @@ public class PostService {
 		return file;
 	}
 
-	public Map<String,String> uploadImage(MultipartFile file) throws IOException {
+	public Map<String,String> uploadImage(HttpServletResponse httpServletResponse, MultipartFile file) throws IOException, CustomException {
 		Map params = ObjectUtils.asMap(
 				"folder", "find-me/posts/",
 				"use_filename", false,
@@ -180,7 +184,7 @@ public class PostService {
 		
 		if (response.getStatusLine().getStatusCode() != 200) {
 			convFile.delete();
-			throw new RuntimeException("Image not uploaded");
+			throw new CustomException(httpServletResponse, HttpStatus.BAD_REQUEST, "Image not uploaded");
 		}
 		
 		HttpEntity responseEntity = response.getEntity();
