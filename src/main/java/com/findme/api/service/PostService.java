@@ -40,6 +40,9 @@ public class PostService {
 	
 	PostRepository postRepository;
 	
+	@Autowired
+	private AIService aiService;
+	
 	PostRepositoryCustom postRepositoryCustom;
 
 	@Autowired
@@ -141,23 +144,6 @@ public class PostService {
 		}
 		postRepository.deleteById(id);
 	}
-	
-	public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-		File file = new File(multipartFile.getOriginalFilename()); // Créez un fichier temporaire
-		
-		try (OutputStream os = new FileOutputStream(file);
-			 InputStream is = multipartFile.getInputStream()) {
-			int bytesRead;
-			byte[] buffer = new byte[8192];
-			while ((bytesRead = is.read(buffer, 0, 8192)) != -1) {
-				os.write(buffer, 0, bytesRead);
-			}
-		} catch (IOException e) {
-			throw e;
-		}
-		
-		return file;
-	}
 
 	public Map<String,String> uploadImage(HttpServletResponse httpServletResponse, MultipartFile file) throws IOException, CustomException {
 		Map params = ObjectUtils.asMap(
@@ -168,35 +154,7 @@ public class PostService {
 		);
 		// TODO : Faire la vérification de l'image auprès de l'API avec l'AI
 		// Call externe api
- 		CloseableHttpClient httpclient = HttpClients.custom()
-				.setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods 
-				.build();
-		 
-		HttpPost httppost = new HttpPost("http://localhost:8080/upload");
-		File convFile = convertMultipartFileToFile(file);
-		HttpEntity entity = MultipartEntityBuilder.create()
-				.addBinaryBody("file", convFile, ContentType.create("image/jpeg"), convFile.getName())
-				.build();
-		
-		httppost.setEntity(entity);
-		
-		CloseableHttpResponse response = httpclient.execute(httppost);
-		
-		if (response.getStatusLine().getStatusCode() != 200) {
-			convFile.delete();
-			throw new CustomException(httpServletResponse, HttpStatus.BAD_REQUEST, "Image not uploaded");
-		}
-		
-		HttpEntity responseEntity = response.getEntity();
-		
-		if (responseEntity != null) {
-			InputStream instream = responseEntity.getContent();
-			try {
-				// do something useful
-			} finally {
-				instream.close();
-			}
-		}
+ 		CloseableHttpResponse response = aiService.aiResponse(file, httpServletResponse);
 		
 		Map<String,String> data = new HashMap<String,String>();
 		if (response.getStatusLine().getStatusCode() == 200) {
@@ -209,9 +167,7 @@ public class PostService {
 			}
 			data.put("url",(String) upload.get("url"));
 			data.put("thumbnail_url", ((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/"));
-			convFile.delete();
 		} else {
-			convFile.delete();
 			throw new RuntimeException("Image not uploaded");
 		}
 		return data;
