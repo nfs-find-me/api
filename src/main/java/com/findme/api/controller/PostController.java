@@ -2,11 +2,15 @@ package com.findme.api.controller;
 
 import com.findme.api.exception.CustomAccessDeniedException;
 import com.findme.api.exception.CustomUnauthorizedException;
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
+import com.findme.api.exception.CustomException;
 import com.findme.api.mapper.PostMapper;
 import com.findme.api.model.Post;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.PostService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,9 +46,9 @@ public class PostController {
 	}
 
 	@PostMapping("/image")
-	public ResponseJson<Map<String,String>> createPost(@RequestParam("file") MultipartFile file) throws IOException {
-		currentImage = postService.uploadImage(file);
-		return new ResponseJson<>(currentImage, HttpStatus.OK.value());
+	public Map<String,String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException, CustomException {
+		currentImage = postService.uploadImage(response, file);
+		return currentImage;
 	}
 	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")

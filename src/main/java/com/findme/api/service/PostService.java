@@ -3,17 +3,31 @@ package com.findme.api.service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.exception.CustomUnauthorizedException;
+import com.findme.api.exception.CustomException;
 import com.findme.api.model.Post;
 import com.findme.api.model.Role;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
 import com.findme.api.repository.custom.PostRepositoryCustom;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,24 +141,79 @@ public class PostService {
 		}
 		postRepository.deleteById(id);
 	}
+	
+	public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
+		File file = new File(multipartFile.getOriginalFilename()); // Créez un fichier temporaire
+		
+		try (OutputStream os = new FileOutputStream(file);
+			 InputStream is = multipartFile.getInputStream()) {
+			int bytesRead;
+			byte[] buffer = new byte[8192];
+			while ((bytesRead = is.read(buffer, 0, 8192)) != -1) {
+				os.write(buffer, 0, bytesRead);
+			}
+		} catch (IOException e) {
+			throw e;
+		}
+		
+		return file;
+	}
 
-	public Map<String,String> uploadImage(MultipartFile file) {
+	public Map<String,String> uploadImage(HttpServletResponse httpServletResponse, MultipartFile file) throws IOException, CustomException {
 		Map params = ObjectUtils.asMap(
 				"folder", "find-me/posts/",
 				"use_filename", false,
 				"unique_filename", true,
 				"overwrite", true
 		);
-		Cloudinary cloudinary = new Cloudinary(environment.getProperty("cloudinary_url"));
-		Map upload = null;
-		try {
-			upload = cloudinary.uploader().upload(file.getBytes(), params);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+		// TODO : Faire la vérification de l'image auprès de l'API avec l'AI
+		// Call externe api
+ 		CloseableHttpClient httpclient = HttpClients.custom()
+				.setRedirectStrategy(new LaxRedirectStrategy()) // adds HTTP REDIRECT support to GET and POST methods 
+				.build();
+		 
+		HttpPost httppost = new HttpPost("http://localhost:8080/upload");
+		File convFile = convertMultipartFileToFile(file);
+		HttpEntity entity = MultipartEntityBuilder.create()
+				.addBinaryBody("file", convFile, ContentType.create("image/jpeg"), convFile.getName())
+				.build();
+		
+		httppost.setEntity(entity);
+		
+		CloseableHttpResponse response = httpclient.execute(httppost);
+		
+		if (response.getStatusLine().getStatusCode() != 200) {
+			convFile.delete();
+			throw new CustomException(httpServletResponse, HttpStatus.BAD_REQUEST, "Image not uploaded");
 		}
+		
+		HttpEntity responseEntity = response.getEntity();
+		
+		if (responseEntity != null) {
+			InputStream instream = responseEntity.getContent();
+			try {
+				// do something useful
+			} finally {
+				instream.close();
+			}
+		}
+		
 		Map<String,String> data = new HashMap<String,String>();
-		data.put("url",(String) upload.get("url"));
-		data.put("thumbnail_url", ((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/"));
+		if (response.getStatusLine().getStatusCode() == 200) {
+			Cloudinary cloudinary = new Cloudinary(environment.getProperty("cloudinary_url"));
+			Map upload = null;
+			try {
+				upload = cloudinary.uploader().upload(file.getBytes(), params);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			data.put("url",(String) upload.get("url"));
+			data.put("thumbnail_url", ((String) upload.get("url")).replace("upload/", "upload/h_330,c_scale/"));
+			convFile.delete();
+		} else {
+			convFile.delete();
+			throw new RuntimeException("Image not uploaded");
+		}
 		return data;
 	}
 }
