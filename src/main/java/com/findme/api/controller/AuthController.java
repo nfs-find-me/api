@@ -22,6 +22,9 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	
+	private System.Logger logger = System.getLogger(AuthController.class.getName());
+	
 	@Autowired
 	private AuthService authService;
 	
@@ -39,11 +42,13 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public ResponseJson<User> register(@RequestBody AuthRequest authRequest) throws CustomUnauthorizedException {
+		logger.log(System.Logger.Level.INFO, "Registering user: " + authRequest.getUsername());
 		return new ResponseJson<>(authService.register(authRequest), HttpStatus.OK.value());
 	}
 	
 	@PostMapping("/login")
 	public ResponseJson<AuthResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws CustomAccessDeniedException {
+		logger.log(System.Logger.Level.INFO, "Authenticating user: " + authRequest.getUsername());
 		// Trouver l'utilisateur par son login (username ou email)
 		User user = userRepository.findByEmailOrUsername(authRequest.getEmail(), authRequest.getUsername());
 		if (user == null) {
@@ -69,6 +74,7 @@ public class AuthController {
 	
 	@PostMapping("/refresh")
 	public ResponseJson<AuthResponse> refreshToken(@RequestBody AuthRequest authRequest) throws CustomUnauthorizedException, CustomAccessDeniedException {
+		logger.log(System.Logger.Level.INFO, "Refreshing token for user: " + authRequest.getUsername());
 		if (authRequest.getRefreshToken() == null && authRequest.getLogin() == null) {
 			throw new CustomUnauthorizedException("Invalid credentials");
 		}
@@ -84,11 +90,13 @@ public class AuthController {
 	
 	@GetMapping("/mail-verif")
 	public boolean checkMail(@Param("id") String id, @Param("code") String code) throws Exception {
+		logger.log(System.Logger.Level.INFO, "Checking mail verification for user: " + id);
 		return authService.checkMail(id,code);
 	}
 	
 	@GetMapping("/send-mail-verif")
 	public User GenerateMailCode(@Param("email")  String email) throws Exception {
+		logger.log(System.Logger.Level.INFO, "Generating mail verification code for user: " + email);
 		return authService.generateNewCode(email);
 	}
 }

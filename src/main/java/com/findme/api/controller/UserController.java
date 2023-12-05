@@ -94,7 +94,7 @@ public class UserController {
 	
 	@DeleteMapping("/{id}")
 	public void deleteUser(@PathVariable String id) throws CustomUnauthorizedException {
-		logger.log(System.Logger.Level.INFO, "Deleting user: " + id);
+		logger.log(System.Logger.Level.WARNING, "Deleting user: " + id);
 		userService.deleteUser(id);
 	}
 }
