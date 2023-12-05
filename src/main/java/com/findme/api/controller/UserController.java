@@ -1,10 +1,12 @@
 package com.findme.api.controller;
 
+import com.findme.api.exception.CustomException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.User;
 import com.findme.api.repository.UserRepository;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+	
+	private System.Logger logger = System.getLogger(UserController.class.getName());
+	
 	private String currentImage;
 
 	@Autowired
@@ -37,15 +42,14 @@ public class UserController {
 	}
 
 	@PostMapping("/avatar/{userId}")
-	public ResponseJson<String> changeAvatar(@RequestParam("file") MultipartFile file, @PathVariable String userId) throws IOException {
-		System.out.println("user: "+userId);
+	public ResponseJson<String> changeAvatar(@RequestParam("file") MultipartFile file, @PathVariable String userId, HttpServletResponse response) throws CustomException, IOException {
+		logger.log(System.Logger.Level.INFO, "Changing avatar for user: " + userId);
 		if(userId==null || userId.isBlank()){
-			throw new IOException("No user provided");
+			throw new CustomException(response, HttpStatus.BAD_REQUEST, "No user provided");
 		}
 		Optional<User> currentUser = userRepository.findById(userId);
-		System.out.println("user: "+currentUser);
 		if(currentUser.isEmpty()){
-			throw new IOException("No user found");
+			throw new CustomException(response, HttpStatus.BAD_REQUEST, "No user found");
 		}
 		currentImage = userService.uploadAvatar(file);
 		currentUser.get().setAvatar(currentImage);
@@ -54,10 +58,10 @@ public class UserController {
 	}
 	
 	@GetMapping("/follow")
-	public ResponseJson<User> followUser(@RequestParam("sender") String sender, @RequestParam("recipient") String recipient) throws IOException {
-		System.out.println(sender);
+	public ResponseJson<User> followUser(@RequestParam("sender") String sender, @RequestParam("recipient") String recipient, HttpServletResponse response) throws CustomException, IOException {
+		logger.log(System.Logger.Level.INFO, "Following user: " + recipient + " from user: " + sender);
 		if(sender==null || recipient==null || sender.isBlank() || recipient.isBlank()){
-			throw new IOException("Missing data");
+			throw new CustomException(response, HttpStatus.BAD_REQUEST, "Missing data");
 		}
 		return new ResponseJson<>(userService.followUser(sender,recipient), HttpStatus.OK.value());
 	}
@@ -65,27 +69,32 @@ public class UserController {
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@PostMapping
 	public ResponseJson<User> createUser(@RequestBody UserDTO userDTO) {
+		logger.log(System.Logger.Level.INFO, "Creating user: " + userDTO.getUsername());
 		return new ResponseJson<>(userService.createUser(userDTO), HttpStatus.OK.value());
 	}
 	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@GetMapping
 	public ResponseJson<List<User>> getAllUsers() {
+		logger.log(System.Logger.Level.INFO, "Getting all users");
 		return new ResponseJson<>(userService.getAllUsers(), HttpStatus.OK.value());
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseJson<User> getUserById(@PathVariable String id) {
+		logger.log(System.Logger.Level.INFO, "Getting user by id: " + id);
 		return new ResponseJson<>(userService.getUserById(id), HttpStatus.OK.value());
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseJson<User> editUser(@PathVariable String id, @RequestBody UserDTO userDTO) throws CustomUnauthorizedException {
+		logger.log(System.Logger.Level.INFO, "Editing user: " + id);
 		return new ResponseJson<>(userService.editUser(id, userDTO), HttpStatus.OK.value());
 	}
 	
 	@DeleteMapping("/{id}")
 	public void deleteUser(@PathVariable String id) throws CustomUnauthorizedException {
+		logger.log(System.Logger.Level.INFO, "Deleting user: " + id);
 		userService.deleteUser(id);
 	}
 }
