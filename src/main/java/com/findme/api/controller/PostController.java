@@ -34,19 +34,13 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public ResponseJson<Post> createPost(@RequestBody PostDTO postDTO) throws Exception {
-		if (currentImage == null) {
-			throw new Exception("Missing image");
-		}
-		postDTO.setPicture(currentImage);
-		currentImage = null;
+	public ResponseJson<Post> createPost(@RequestBody PostDTO postDTO) {
 		return new ResponseJson<>(postService.createPost(postMapper.toEntity(postDTO)), HttpStatus.OK.value());
 	}
 
 	@PostMapping("/image")
 	public Map<String,String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException, CustomException {
-		currentImage = postService.uploadImage(response, file);
-		return currentImage;
+		return postService.uploadImage(response, file);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
