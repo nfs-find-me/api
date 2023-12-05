@@ -10,17 +10,9 @@ import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
 import com.findme.api.repository.custom.PostRepositoryCustom;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,7 +44,7 @@ public class PostService {
 	}
 	
 	public Post createPost(HttpServletResponse httpServletResponse, MultipartFile file, Post post) throws IOException, CustomException {
-		uploadImage(httpServletResponse, file);
+		post.setPicture(uploadImage(httpServletResponse, file));
 		return postRepository.save(post);
 	}
 	
