@@ -22,7 +22,6 @@ public class UserInfoUserDetails implements UserDetails {
 		for (Role role : userInfo.getRoles()) {
 			authorities.add(new SimpleGrantedAuthority(role.toString()));
 		}
-		System.out.println("UserDetails: " + name + " " + password + " " + authorities);
 	}
 	
 	@Override
