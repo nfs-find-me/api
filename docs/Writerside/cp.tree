@@ -6,5 +6,6 @@
                  name="Create Post"
                  start-page="createPost.md">
 
+    <toc-element topic="Authentication.md"/>
     <toc-element topic="createPost.md"/>
 </instance-profile>
