@@ -22,7 +22,9 @@ public class Post {
 	
 	@NonNull
 	private String userId;
-	
+
+	private User user;
+
 	private Map<String,String> picture;
 	
 	private String description;
@@ -78,5 +80,5 @@ public class Post {
 		
 		private LocalDateTime createdAt = LocalDateTime.now();
 	}
-	
+
 }

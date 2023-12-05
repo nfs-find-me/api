@@ -5,9 +5,12 @@ import com.cloudinary.utils.ObjectUtils;
 import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.exception.CustomException;
 import com.findme.api.model.Post;
+import com.findme.api.model.User;
 import com.findme.api.model.Role;
+import com.findme.api.service.UserService;
 import com.findme.api.model.dto.PostDTO;
 import com.findme.api.repository.PostRepository;
+import com.findme.api.repository.UserRepository;
 import com.findme.api.repository.custom.PostRepositoryCustom;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.HttpEntity;
@@ -28,6 +31,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -36,7 +40,8 @@ public class PostService {
 	private UserService userService;
 	
 	PostRepository postRepository;
-	
+	UserRepository userRepository;
+
 	@Autowired
 	private AIService aiService;
 	
@@ -109,6 +114,10 @@ public class PostService {
 	public Post getPostById(String id) {
 		Post post = postRepository.findById(id).orElse(null);
 		addView(post);
+		System.out.println(post.getUserId());
+		User user = userService.getUserById(post.getUserId());
+		post.setUser(user);
+		System.out.println(user);
 		return post;
 	}
 	
