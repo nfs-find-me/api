@@ -51,7 +51,8 @@ public class PostService {
 		this.postRepositoryCustom = postRepositoryCustom;
 	}
 	
-	public Post createPost(Post post) {
+	public Post createPost(HttpServletResponse httpServletResponse, MultipartFile file, Post post) throws IOException, CustomException {
+		uploadImage(httpServletResponse, file);
 		return postRepository.save(post);
 	}
 	
