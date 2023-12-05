@@ -1,0 +1,11 @@
+spring.data.mongodb.uri=
+spring.data.mongodb.database=
+server.port=8081
+cloudinary_url=
+jwt.secret=5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
+mailgun.api.key=
+mailgun.email=
+mailgun.domain=
+frontend.url=http://127.0.0.1:5173/
+spring.mvc.pathmatch.matching-strategy: ant_path_matcher
+ai.url=http://127.0.0.1:8080/upload
