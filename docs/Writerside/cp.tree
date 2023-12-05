@@ -3,8 +3,10 @@
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
 <instance-profile id="cp"
-                 name="Create Post"
-                 start-page="createPost.md">
+                 name="API FindMe"
+                 start-page="Starter.md">
 
+    <toc-element topic="Authentication.md"/>
+    <toc-element topic="Starter.md"/>
     <toc-element topic="createPost.md"/>
 </instance-profile>
