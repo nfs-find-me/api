@@ -1,6 +1,6 @@
 package com.findme.api.controller;
 
-import com.findme.api.exception.CustomAccessDeniedException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.exception.CustomException;
 import com.findme.api.mapper.PostMapper;
@@ -35,15 +35,10 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public ResponseJson<Post> createPost(@RequestBody PostDTO postDTO) {
+	public ResponseJson<Post> createPost(@RequestParam("data") String postDTOString, @RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException, CustomException {
+		 PostDTO postDTO = new ObjectMapper().readValue(postDTOString, PostDTO.class);
 		logger.log(System.Logger.Level.INFO, "Creating post");
-		return new ResponseJson<>(postService.createPost(postMapper.toEntity(postDTO)), HttpStatus.OK.value());
-	}
-
-	@PostMapping("/image")
-	public Map<String,String> uploadImage(@RequestParam("file") MultipartFile file, HttpServletResponse response) throws IOException, CustomException {
-		logger.log(System.Logger.Level.INFO, "Uploading image");
-		return postService.uploadImage(response, file);
+		return new ResponseJson<>(postService.createPost(response, file, postMapper.toEntity(postDTO)), HttpStatus.OK.value());
 	}
 	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
