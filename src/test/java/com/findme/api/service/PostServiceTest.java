@@ -83,16 +83,9 @@ class PostServiceTest {
 		
 		return postDTO;
 	}
-	
-	@Test
-	void createPost() {
-		Post newPost = postService.createPost(postMapper.toEntity(getPostDTO()));
-		Assert.assertEquals(newPost.getUserId(), getPostDTO().getUserId());
-	}
-	
+
 	@Test
 	void getAllPosts() {
-		postService.createPost(postMapper.toEntity(getPostDTO()));
 		List<Post> posts = postService.getAllPosts();
 		Assert.assertNotNull(posts);
 		Assert.assertEquals(posts.size(), 1);

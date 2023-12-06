@@ -48,6 +48,7 @@ public class PostService {
 	
 	public Post createPost(HttpServletResponse httpServletResponse, MultipartFile file, Post post) throws IOException, CustomException {
 		post.setPicture(uploadImage(httpServletResponse, file));
+		post.setUser(userService.getUserById(post.getUserId()));
 		return postRepository.save(post);
 	}
 	
