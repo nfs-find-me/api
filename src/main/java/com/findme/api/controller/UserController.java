@@ -83,6 +83,7 @@ public class UserController {
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@PostMapping("/ban/{id}")
 	public ResponseJson<Void> banUser(@PathVariable String id, HttpServletResponse response) throws IOException, CustomException {
+		logger.log(System.Logger.Level.WARNING, "Banning user: " + id);
 		userService.banUser(id, response);
 		return new ResponseJson<>(null, HttpStatus.OK.value());
 	}

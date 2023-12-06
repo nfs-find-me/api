@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableMethodSecurity
 public class SecurityConfig {
 	@Autowired
-	private JwtAuthFilter authFilter;
+	private JwtAuthFilter jwtAuthFilter;
 	
 	@Bean
 	//authentication
@@ -57,7 +57,7 @@ public class SecurityConfig {
 				)
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.httpBasic(Customizer.withDefaults())
-				.addFilterAfter(authFilter, BasicAuthenticationFilter.class)
+				.addFilterAfter(jwtAuthFilter, BasicAuthenticationFilter.class)
 				.build();
 	}
 	
