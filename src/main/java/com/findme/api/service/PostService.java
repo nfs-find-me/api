@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -117,6 +118,16 @@ public class PostService {
 	
 	public List<Post> getPostsByUserId(String id) {
 		return postRepository.findAllByUserId(id);
+	}
+	
+	public List<Post> getPostsByUsername(String username, HttpServletResponse response) throws IOException, CustomException {
+		User user = userService.getUserByUsername(username);
+		if (user == null) {
+			throw new CustomException(response, HttpStatus.NOT_FOUND, "User not found");
+		}
+		List<Post> posts = postRepository.findAllByUserId(user.getId());
+		System.out.println(posts.stream().count());
+		return posts;
 	}
 	
 	public Post editPost(String id, PostDTO postDTO) throws CustomUnauthorizedException {

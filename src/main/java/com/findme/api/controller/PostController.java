@@ -89,6 +89,12 @@ public class PostController {
 		return new ResponseJson<>(postService.getPostsByUserId(id), HttpStatus.OK.value());
 	}
 	
+	@GetMapping("/search/{username}")
+	public ResponseJson<List<Post>> getPostsByUsername(@PathVariable String username, HttpServletResponse response) throws IOException, CustomException {
+		logger.log(System.Logger.Level.INFO, "Getting posts by username: " + username);
+		return new ResponseJson<>(postService.getPostsByUsername(username, response), HttpStatus.OK.value());
+	}
+	
 	@PostMapping("/{id}/toggle-like")
 	public ResponseJson<Void> toggleLike(@PathVariable String id) throws CustomException {
 		logger.log(System.Logger.Level.INFO, "Toggling like for post: " + id);
