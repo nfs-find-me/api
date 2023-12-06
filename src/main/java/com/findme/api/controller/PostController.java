@@ -41,7 +41,6 @@ public class PostController {
 		return new ResponseJson<>(postService.createPost(response, file, postMapper.toEntity(postDTO)), HttpStatus.OK.value());
 	}
 	
-	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@GetMapping
 	public ResponseJson<List<Post>> getAllPosts() {
 		logger.log(System.Logger.Level.INFO, "Getting all posts");
