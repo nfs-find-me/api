@@ -80,6 +80,13 @@ public class UserController {
 		return new ResponseJson<>(userService.getAllUsers(), HttpStatus.OK.value());
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	@PostMapping("/ban/{id}")
+	public ResponseJson<Void> banUser(@PathVariable String id, HttpServletResponse response) throws IOException, CustomException {
+		userService.banUser(id, response);
+		return new ResponseJson<>(null, HttpStatus.OK.value());
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseJson<User> getUserById(@PathVariable String id) {
 		logger.log(System.Logger.Level.INFO, "Getting user by id: " + id);
