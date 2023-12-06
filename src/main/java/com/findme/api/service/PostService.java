@@ -111,6 +111,10 @@ public class PostService {
 		return post;
 	}
 	
+	public List<Post> getPostsByUserId(String id) {
+		return postRepository.findAllByUserId(id);
+	}
+	
 	public Post editPost(String id, PostDTO postDTO) throws CustomUnauthorizedException {
 		if (!userService.getUserConnected().getRoles().contains(Role.ADMIN) && !userService.getUserConnected().getId().equals(postDTO.getUserId())) {
 			throw new CustomUnauthorizedException("You can't edit this post");
