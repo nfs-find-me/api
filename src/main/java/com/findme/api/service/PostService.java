@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -78,7 +80,9 @@ public class PostService {
 	}
 	
 	public List<Post> getAllPosts() {
-		return postRepository.findAll();
+		List<Post> posts = postRepository.findAll();
+		Collections.shuffle(posts);
+		return posts;
 	}
 	
 	// Filters
