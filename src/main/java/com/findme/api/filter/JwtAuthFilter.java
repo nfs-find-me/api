@@ -2,6 +2,7 @@ package com.findme.api.filter;
 
 import com.findme.api.config.UserDetailsServiceImpl;
 import com.findme.api.exception.CustomAccessDeniedException;
+import com.findme.api.model.Role;
 import com.findme.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,6 +44,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);
+				
+				System.out.println("auth" + userDetails.getAuthorities());
+				if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(Role.BAN.name()))) {
+					System.out.println("ban");
+					try {
+						throw new CustomAccessDeniedException(response);
+					} catch (CustomAccessDeniedException e) {
+						throw new RuntimeException(e);
+					}
+				}
 			} else {
 				try {
 					throw new CustomAccessDeniedException(response);
