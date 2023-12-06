@@ -2,15 +2,18 @@ package com.findme.api.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.findme.api.exception.CustomException;
 import com.findme.api.exception.CustomUnauthorizedException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.Role;
 import com.findme.api.model.User;
 import com.findme.api.model.dto.UserDTO;
 import com.findme.api.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -142,5 +145,15 @@ public class UserService {
 		userRepository.save(targetUser.get());
 		userRepository.save(senderUser.get());
 		return senderUser.get();
+	}
+	
+	public void banUser(String id, HttpServletResponse response) throws IOException, CustomException {
+		User user = userRepository.findById(id).orElse(null);
+		if (user != null) {
+			user.setRoles(List.of(Role.BAN));
+			userRepository.save(user);
+		} else {
+			throw new CustomException(response, HttpStatus.NOT_FOUND, "User not found");
+		}
 	}
 }

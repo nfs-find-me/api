@@ -1,10 +1,12 @@
 package com.findme.api.controller;
 
+import com.findme.api.exception.CustomException;
 import com.findme.api.mapper.UserMapper;
 import com.findme.api.model.User;
 import com.findme.api.repository.UserRepository;
 import com.findme.api.response.ResponseJson;
 import com.findme.api.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -73,6 +75,13 @@ public class UserController {
 	@GetMapping
 	public ResponseJson<List<User>> getAllUsers() {
 		return new ResponseJson<>(userService.getAllUsers(), HttpStatus.OK.value());
+	}
+	
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
+	@PostMapping("/ban/{id}")
+	public ResponseJson<Void> banUser(@PathVariable String id, HttpServletResponse response) throws IOException, CustomException {
+		userService.banUser(id, response);
+		return new ResponseJson<>(null, HttpStatus.OK.value());
 	}
 	
 	@GetMapping("/{id}")
