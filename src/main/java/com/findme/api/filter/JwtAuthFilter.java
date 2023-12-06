@@ -45,9 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authToken);
 				
-				System.out.println("auth" + userDetails.getAuthorities());
 				if (userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(Role.BAN.name()))) {
-					System.out.println("ban");
 					try {
 						throw new CustomAccessDeniedException(response);
 					} catch (CustomAccessDeniedException e) {
