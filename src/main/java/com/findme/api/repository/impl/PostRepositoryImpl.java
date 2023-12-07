@@ -55,4 +55,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
         return mongoTemplate.find(query, Post.class);
     }
+
+    @Override
+    public List<Post> findAllFollowingsPosts(String userId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("user.followings").is(userId));
+        return mongoTemplate.find(query, Post.class);
+    }
 }

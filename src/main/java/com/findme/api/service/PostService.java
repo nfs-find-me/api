@@ -107,6 +107,11 @@ public class PostService {
 		return postRepositoryCustom.findAllOldestPosts();
 	}
 	
+	public List<Post> getAllPostsByFollowing(String userId) {
+		User user = userService.getUserById(userId);
+		return postRepositoryCustom.findAllFollowingsPosts(userId);
+	}
+	
 	
 	public Post getPostById(String id) {
 		Post post = postRepository.findById(id).orElse(null);
@@ -123,7 +128,7 @@ public class PostService {
 	public List<Post> getPostsByUsername(String username, HttpServletResponse response) throws IOException, CustomException {
 		User user = userService.getUserByUsername(username);
 		if (user == null) {
-			throw new CustomException(response, HttpStatus.NOT_FOUND, "User not found");
+			return null;
 		}
 		List<Post> posts = postRepository.findAllByUserId(user.getId());
 		System.out.println(posts.stream().count());

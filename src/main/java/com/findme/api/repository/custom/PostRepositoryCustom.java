@@ -15,4 +15,6 @@ public interface PostRepositoryCustom {
     List<Post> findAllMostRecentPosts();
     
     List<Post> findAllOldestPosts();
+    
+    List<Post> findAllFollowingsPosts(String userId);
 }
