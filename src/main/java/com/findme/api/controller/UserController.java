@@ -80,6 +80,12 @@ public class UserController {
 		return new ResponseJson<>(userService.getAllUsers(), HttpStatus.OK.value());
 	}
 	
+	@GetMapping("/filterScore")
+	public ResponseJson<List<User>> getAllUsersByScore() {
+		logger.log(System.Logger.Level.INFO, "Getting all users by score");
+		return new ResponseJson<>(userService.getAllUserByScore(), HttpStatus.OK.value());
+	}
+	
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	@PostMapping("/ban/{id}")
 	public ResponseJson<Void> banUser(@PathVariable String id, HttpServletResponse response) throws IOException, CustomException {
