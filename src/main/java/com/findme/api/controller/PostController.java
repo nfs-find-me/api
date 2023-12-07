@@ -77,6 +77,12 @@ public class PostController {
 		return new ResponseJson<>(postService.getAllOldestPosts(), HttpStatus.OK.value());
 	}
 	
+	@GetMapping("/filters/following/{userId}")
+	public ResponseJson<List<Post>> filterPostsByFollowing(@PathVariable String userId) {
+		logger.log(System.Logger.Level.INFO, "Getting all posts by following");
+		return new ResponseJson<>(postService.getAllPostsByFollowing(userId), HttpStatus.OK.value());
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseJson<Post> getPostById(@PathVariable String id) {
 		logger.log(System.Logger.Level.INFO, "Getting post by id: " + id);
