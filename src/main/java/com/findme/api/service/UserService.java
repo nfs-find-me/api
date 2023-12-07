@@ -156,4 +156,14 @@ public class UserService {
 			throw new CustomException(response, HttpStatus.NOT_FOUND, "User not found");
 		}
 	}
+
+	public void givePoints(String id, Integer points) throws RuntimeException {
+		User user = userRepository.findById(id).orElse(null);
+		if (user != null) {
+			user.setScore((user.getScore() + points));
+			userRepository.save(user);
+		} else {
+			throw new RuntimeException("Target user not found");
+		}
+	}
 }
