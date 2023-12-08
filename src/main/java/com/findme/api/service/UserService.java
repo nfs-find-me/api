@@ -158,6 +158,7 @@ public class UserService {
 	}
 
 	public void givePoints(String id, Integer points) throws RuntimeException {
+		System.out.println(points);
 		User user = userRepository.findById(id).orElse(null);
 		if (user != null) {
 			user.setScore((user.getScore() + points));

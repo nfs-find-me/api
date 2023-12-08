@@ -109,8 +109,11 @@ public class UserController {
 //	POINTS
 	@PostMapping("/give_points/{id}")
 	public ResponseJson<Void> givePoints(@PathVariable String id, @RequestBody Integer points) throws IOException, CustomException {
-		logger.log(System.Logger.Level.WARNING, "Banning user: " + id);
-		userService.givePoints(id, points);
+		System.out.println("points data : " + points);
+		if (points>0) {
+			userService.givePoints(id, points);
+		}
+
 		return new ResponseJson<>(null, HttpStatus.OK.value());
 	}
 }
