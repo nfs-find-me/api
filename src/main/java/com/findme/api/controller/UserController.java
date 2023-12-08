@@ -111,4 +111,15 @@ public class UserController {
 		logger.log(System.Logger.Level.WARNING, "Deleting user: " + id);
 		userService.deleteUser(id);
 	}
+
+//	POINTS
+	@PostMapping("/give_points/{id}")
+	public ResponseJson<Void> givePoints(@PathVariable String id, @RequestBody Integer points) throws IOException, CustomException {
+		System.out.println("points data : " + points);
+		if (points>0) {
+			userService.givePoints(id, points);
+		}
+
+		return new ResponseJson<>(null, HttpStatus.OK.value());
+	}
 }
