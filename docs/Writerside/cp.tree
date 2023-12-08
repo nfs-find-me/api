@@ -6,7 +6,8 @@
                  name="API FindMe"
                  start-page="Starter.md">
 
-    <toc-element topic="Authentication.md"/>
     <toc-element topic="Starter.md"/>
+    <toc-element topic="Endpoints.md"/>
+    <toc-element topic="Authentication.md"/>
     <toc-element topic="createPost.md"/>
 </instance-profile>
